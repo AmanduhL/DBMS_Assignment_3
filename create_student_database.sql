@@ -4,7 +4,7 @@ CREATE TABLE students (
 	first_name TEXT NOT NULL,
 	last_name TEXT NOT NULL,
 	email TEXT NOT NULL UNIQUE,
-	enrollment_dat
+	enrollment_date DATE
 );
 
 INSERT INTO students (first_name, last_name, email, enrollment_date) VALUES
