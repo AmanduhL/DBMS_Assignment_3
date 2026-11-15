@@ -145,6 +145,7 @@ public class DatabaseOperations {
         Scanner sc = new Scanner(System.in);
         boolean flag = true;
 
+        // User menu
         while (flag){
             System.out.println("1. Get all students\n" +
                                 "2. Add a student\n" +
