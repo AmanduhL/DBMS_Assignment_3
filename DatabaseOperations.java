@@ -10,8 +10,8 @@ import java.util.Scanner;
 public class DatabaseOperations {
     // Database credentials
     String url = "jdbc:postgresql://localhost:5432/Student";
-    String user = "postgres";
-    String password = "postgres18";
+    String user = "YOUR_USERNAME";
+    String password = "YOUR_PASSWORD";
 
     // Return all students from the database
     public void getAllStudents() {
