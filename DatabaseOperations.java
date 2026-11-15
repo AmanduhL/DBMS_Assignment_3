@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.util.Scanner;
 
 public class DatabaseOperations {
     // Database credentials
@@ -25,25 +26,25 @@ public class DatabaseOperations {
                 ResultSet rs = stmt.executeQuery(SQL);
 
                 // For each student in the database, print out their info
+                String headerFormat = "%-6s %-14s %-13s %-30s %-1s%n";
+                String tableFormat = "%-6d %-14s %-13s %-30s %-1tF%n";
+                System.out.printf(headerFormat, "ID", "First Name", "Last Name", "Email", "Enrollment Date");
                 while (rs.next()) {
                     int id = rs.getInt("student_id");
                     String f_name = rs.getString("first_name");
                     String l_name = rs.getString("last_name");
                     String email = rs.getString("email");
                     Date enrollment = rs.getDate("enrollment_date");
-                    System.out.println("ID: " + id +
-                            ", First Name: " + f_name +
-                            ", Last Name: " + l_name +
-                            ", Email: " + email +
-                            ", Enrollment Date: " + enrollment);
+                    System.out.printf(tableFormat, id, f_name, l_name, email, enrollment);
                 }
+                System.out.println();
 
                 // Close resources
                 rs.close();
                 stmt.close();
 
             } else {
-                System.out.print("Failed to establish connection.");
+                System.out.print("Failed to establish connection.\n");
             }
             conn.close(); // Close connection
         } catch (ClassNotFoundException | SQLException e) {
@@ -68,12 +69,12 @@ public class DatabaseOperations {
                 pstmt.setString(3, email);
                 pstmt.setDate(4, enrollment);
                 pstmt.executeUpdate();
-                System.out.println("New student added successfully.");
+                System.out.println("New student added successfully.\n");
 
                 pstmt.close(); // Close prepared statement
 
             } else {
-                System.out.print("Failed to establish connection.");
+                System.out.print("Failed to establish connection.\n");
             }
             conn.close(); // Close connection
         }
@@ -97,12 +98,12 @@ public class DatabaseOperations {
                 pstmt.setString(1, new_email);
                 pstmt.setInt(2, student_id);
                 pstmt.executeUpdate();
-                System.out.println("Student email updated successfully.");
+                System.out.println("Student email updated successfully.\n");
 
                 pstmt.close(); // Close prepared statement
 
             } else {
-                System.out.print("Failed to establish connection.");
+                System.out.print("Failed to establish connection.\n");
             }
             conn.close(); // Close connection
         }
@@ -125,12 +126,12 @@ public class DatabaseOperations {
                 // Set missing value to given ID and execute query
                 pstmt.setInt(1, student_id);
                 pstmt.executeUpdate();
-                System.out.println("Student email updated successfully.");
+                System.out.println("Student deleted successfully.\n");
 
                 pstmt.close(); // Close prepared statement
 
             } else {
-                System.out.print("Failed to establish connection.");
+                System.out.print("Failed to establish connection.\n");
             }
             conn.close(); // Close connection
         }
@@ -141,11 +142,64 @@ public class DatabaseOperations {
 
     public static void main(String[] args) {
         DatabaseOperations operations = new DatabaseOperations();
+        Scanner sc = new Scanner(System.in);
+        boolean flag = true;
 
-        operations.getAllStudents();
-        //operations.addStudent("Samantha", "Nora", "smth@gmail.com", Date.valueOf("2024-01-08"));
-        operations.deleteStudent(4);
-        operations.getAllStudents();
-        //operations.updateStudentEmail(4, "updated@gmail.com");
+        while (flag){
+            System.out.println("1. Get all students\n" +
+                                "2. Add a student\n" +
+                                "3. Update a student's email\n" +
+                                "4. Delete a student\n" +
+                                "5. Exit");
+            System.out.println("Enter a number:");
+
+            int input = sc.nextInt();
+            switch (input){
+                case 1:
+                    System.out.println("Printing all students...");
+                    operations.getAllStudents();
+                    break;
+
+                case 2:
+                    System.out.println("Adding a new student...");
+                    System.out.println("Enter first name:");
+                    sc.nextLine();
+                    String firstName = sc.nextLine();
+                    System.out.println("Enter last name:");
+                    String lastName = sc.nextLine();
+                    System.out.println("Enter email:");
+                    String email = sc.nextLine();
+                    System.out.println("Enter enrollment date (YYYY-MM-DD):");
+                    String date = sc.nextLine();
+
+                    operations.addStudent(firstName,lastName, email, Date.valueOf(date));
+                    break;
+
+                case 3:
+                    System.out.println("Updating a student's email...");
+                    System.out.println("Enter the student's ID:");
+                    int id = sc.nextInt();
+                    System.out.println("Enter the new email:");
+                    sc.nextLine();
+                    String new_email = sc.nextLine();
+
+                    operations.updateStudentEmail(id, new_email);
+                    break;
+
+                case 4:
+                    System.out.println("Deleting a student...");
+                    System.out.println("Enter ID of student to remove:");
+                    int id1 = sc.nextInt();
+
+                    operations.deleteStudent(id1);
+                    break;
+
+                case 5:
+                    sc.close();
+                    System.out.println("Exiting...");
+                    flag = false;
+                    break;
+            }
+        }
     }
 }
